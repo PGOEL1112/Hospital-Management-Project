@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 class Patient {
-    private static int idCounter=1;
+    private static int idCounter = 1;
     private int id;
     private String name;
-    private int age ;
+    private int age;
     private String gender;
 
     public Patient(String name, String gender, int age) {
@@ -17,84 +17,59 @@ class Patient {
         this.age = age;
     }
 
-    public int getId(){
+    public int getId() {
         return id;
     }
-    
-    public String toString(){
-        return "Patient Id : "+ id + ", Name : " + name +", Gender : " + gender + ", Age : " + age;
-    } 
+
+    public String toString() {
+        return "Patient Id: " + id + ", Name: " + name + ", Gender: " + gender + ", Age: " + age;
+    }
 }
 
-class Doctor{
-    private static int idCounter=1;
+class Doctor {
+    private static int idCounter = 1;
     private int id;
     private String name;
-    private String Speciality;
+    private String speciality;
 
-    public Doctor(String name, String Speciality) {
+    public Doctor(String name, String speciality) {
         this.id = idCounter++;
         this.name = name;
-        this.Speciality=Speciality;
+        this.speciality = speciality;
     }
 
-    public int getId(){
+    public int getId() {
         return id;
     }
-    
-    @Override
-    public String toString(){
-        return ("Doctor Id : "+ id + ", Name : " + name +", Speciality: " + Speciality);
-    } 
+
+    public String toString() {
+        return "Doctor Id: " + id + ", Name: " + name + ", Speciality: " + speciality;
+    }
 }
 
-class Appointment{
+class Appointment {
     private Patient patient;
     private Doctor doctor;
     private String date;
 
     public Appointment(Patient patient, Doctor doctor, String date) {
-        this. patient = patient;
+        this.patient = patient;
         this.doctor = doctor;
         this.date = date;
-
     }
 
-    @Override
-    public String toString(){
-        return "Appointment : [Patient : " + patient + "Doctor : "+ doctor + "Date: " + date + "]";
-    } 
+    public String toString() {
+        return "Appointment [Patient: " + patient + ", Doctor: " + doctor + ", Date: " + date + "]";
+    }
 }
 
-public class HospitalManageProject{
+public class HospitalManageProject {
     private static ArrayList<Patient> patients = new ArrayList<>();
     private static ArrayList<Doctor> doctors = new ArrayList<>();
     private static ArrayList<Appointment> appointments = new ArrayList<>();
 
-    private static void ViewAppointment() {
-        System.out.println("List of Appointments:");
-        if (appointments.isEmpty()) {
-            System.out.println("No appointments scheduled.");
-        } else {
-            for (Appointment a : appointments) {
-                System.out.println(a);
-            }
-        }
-    }
-
-    private static void ViewDoctor() {
-         System.out.println("List of Doctors:");
-        if (doctors.isEmpty()) {
-            System.out.println("No doctors available.");
-        } else {
-            for (Doctor d : doctors) {
-                System.out.println(d);
-            }
-        }
-    }
-
-    private static void ViewPatient() {
-        System.out.println("List of Patients:");
+    private static void viewPatients() {
+        System.out.println("\n--- List of Patients ---");
         if (patients.isEmpty()) {
             System.out.println("No patients available.");
         } else {
@@ -104,18 +79,69 @@ public class HospitalManageProject{
         }
     }
 
-    private static void ScheduleAppointment(Scanner scanner) {
+    private static void viewDoctors() {
+        System.out.println("\n--- List of Doctors ---");
+        if (doctors.isEmpty()) {
+            System.out.println("No doctors available.");
+        } else {
+            for (Doctor d : doctors) {
+                System.out.println(d);
+            }
+        }
+    }
+
+    private static void viewAppointments() {
+        System.out.println("\n--- List of Appointments ---");
+        if (appointments.isEmpty()) {
+            System.out.println("No appointments scheduled.");
+        } else {
+            for (Appointment a : appointments) {
+                System.out.println(a);
+            }
+        }
+    }
+
+    private static void addPatient(Scanner scanner) {
+        System.out.print("Enter Patient Name: ");
+        String name = scanner.nextLine();
+
+        System.out.print("Enter Patient Age: ");
+        int age = scanner.nextInt();
+        scanner.nextLine(); // consume newline
+
+        System.out.print("Enter Patient Gender: ");
+        String gender = scanner.nextLine();
+
+        Patient patient = new Patient(name, gender, age);
+        patients.add(patient);
+        System.out.println("Patient Added Successfully!");
+    }
+
+    private static void addDoctor(Scanner scanner) {
+        System.out.print("Enter Doctor Name: ");
+        String name = scanner.nextLine();
+
+        System.out.print("Enter Doctor Speciality: ");
+        String speciality = scanner.nextLine();
+
+        Doctor doctor = new Doctor(name, speciality);
+        doctors.add(doctor);
+        System.out.println("Doctor Added Successfully!");
+    }
+
+    private static void scheduleAppointment(Scanner scanner) {
         if (patients.isEmpty() || doctors.isEmpty()) {
-            System.out.println("Please ensure at least one patient and one doctor exist.");
+            System.out.println("Please add at least one patient and one doctor first.");
             return;
         }
 
-        System.out.println("Select Patient by ID:");
+        System.out.println("\nSelect Patient by ID:");
         for (Patient p : patients) {
-            System.out.println(p.getId() + ". " + p);
+            System.out.println(p.getId() + " → " + p);
         }
         int patientId = scanner.nextInt();
-        scanner.nextLine(); // consume newline
+        scanner.nextLine();
+
         Patient selectedPatient = null;
         for (Patient p : patients) {
             if (p.getId() == patientId) {
@@ -128,12 +154,13 @@ public class HospitalManageProject{
             return;
         }
 
-        System.out.println("Select Doctor by ID:");
+        System.out.println("\nSelect Doctor by ID:");
         for (Doctor d : doctors) {
-            System.out.println(d.getId() + ". " + d);
+            System.out.println(d.getId() + " → " + d);
         }
         int doctorId = scanner.nextInt();
-        scanner.nextLine(); // consume newline
+        scanner.nextLine();
+
         Doctor selectedDoctor = null;
         for (Doctor d : doctors) {
             if (d.getId() == doctorId) {
@@ -149,80 +176,56 @@ public class HospitalManageProject{
         System.out.print("Enter Appointment Date (DD-MM-YYYY): ");
         String date = scanner.nextLine();
 
-        Appointment appointment = new Appointment(selectedPatient, selectedDoctor, date);
-        appointments.add(appointment);
-        System.out.println("Appointment scheduled successfully!");
-    }
-
-    private static void AddDoctor(Scanner scanner) {
-        System.out.print("Enter Doctor Name: ");
-        String name = scanner.nextLine();
-        System.out.print("Enter Doctor Speciality: ");
-        String speciality = scanner.nextLine();
-
-        Doctor doctor = new Doctor(name, speciality);
-        doctors.add(doctor);
-        System.out.println("Doctor added successfully!");
-    }
-
-    private static void AddPatient(Scanner scanner) {
-       System.out.println("Enter the Patient Name: ");
-        String name = scanner.nextLine();
-        System.out.println("Enter the Patient Age : ");
-        int age = scanner.nextInt();
-        System.out.println("Enter the Patient Gender : ");
-        String gender = scanner.nextLine();
-
-        Patient patient= new Patient(name, gender, age);
-        patients.add(patient);
-        System.out.println("Patient Added Successfully !!");
+        appointments.add(new Appointment(selectedPatient, selectedDoctor, date));
+        System.out.println("Appointment Scheduled Successfully!");
     }
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        int Choice;
-    
-        do{
-            System.out.println("<--------------- Here we Presents our Hospital Management System ---------->");
-            System.out.println();
-            System.out.println("Select the choice that mentioned below ");
-            System.out.println("-------------------------------------------");
-            System.out.println("1. Add Patient ");
-            System.out.println("2. Add Doctor ");
-            System.out.println("3. Schedule a Appointment ");
-            System.out.println("4. View Patient ");
-            System.out.println("5. View Doctor");
-            System.out.println("6. View Appointment ");
-            System.out.println("0. Exit ");
-            System.out.println("Please Select the choice : ");
-            Choice = scanner.nextInt();
+        int choice;
 
-            switch (Choice) {
+        do {
+            System.out.println("\n===== Hospital Management System =====");
+            System.out.println("1. Add Patient");
+            System.out.println("2. Add Doctor");
+            System.out.println("3. Schedule Appointment");
+            System.out.println("4. View Patients");
+            System.out.println("5. View Doctors");
+            System.out.println("6. View Appointments");
+            System.out.println("0. Exit");
+            System.out.print("Enter your choice: ");
+
+            choice = scanner.nextInt();
+            scanner.nextLine();
+
+            switch (choice) {
                 case 1:
-                    AddPatient(scanner);
+                    addPatient(scanner);
                     break;
                 case 2:
-                    AddDoctor(scanner);
-                    break;    
+                    addDoctor(scanner);
+                    break;
                 case 3:
-                    ScheduleAppointment(scanner);
+                    scheduleAppointment(scanner);
                     break;
                 case 4:
-                    ViewPatient();
-                    break;  
+                    viewPatients();
+                    break;
                 case 5:
-                    ViewDoctor();
-                    break;    
+                    viewDoctors();
+                    break;
                 case 6:
-                    ViewAppointment();
+                    viewAppointments();
                     break;
                 case 0:
-                    System.out.println("EXIT FROM SYSTEM ...");    
-                default:
-                    System.out.println("Invalid Choice ! Please Enter a valid Choice..");
+                    System.out.println("Exiting System... Thank You!");
                     break;
-            } 
-        }while (Choice!=0);
+                default:
+                    System.out.println("Invalid Choice! Try again.");
+            }
+
+        } while (choice != 0);
+
+        scanner.close();
     }
-    
 }
